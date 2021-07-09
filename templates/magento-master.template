@@ -93,7 +93,7 @@ Metadata:
       DBInstanceClass:
         default: Amazon Aurora/MySQL DB instance type
       DBMasterUserPassword:
-        default: DB master password
+        default: DB master password. Min 8 chars, Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
       DBMasterUsername:
         default: DB master user name
       DBMultiAZ:
@@ -185,7 +185,9 @@ Parameters:
   BastionAMIOS:
     AllowedValues:
       - Amazon-Linux2-HVM
+      - CentOS-7-HVM
       - Ubuntu-Server-20.04-LTS-HVM
+      - SUSE-SLES-15-HVM
     Default: Amazon-Linux2-HVM
     Description: The Linux distribution for the AMI to be used for the bastion instances
     Type: String
@@ -232,45 +234,21 @@ Parameters:
     Type: String
   DBInstanceClass:
     AllowedValues:
-    - db.m1.large
-    - db.m1.medium
-    - db.m1.small
-    - db.m1.xlarge
-    - db.m2.2xlarge
-    - db.m2.4xlarge
-    - db.m2.xlarge
-    - db.m3.2xlarge
-    - db.m3.large
-    - db.m3.medium
-    - db.m3.xlarge
-    - db.m4.10xlarge
-    - db.m4.2xlarge
-    - db.m4.4xlarge
-    - db.m4.large
-    - db.m4.xlarge
-    - db.r3.2xlarge
-    - db.r3.4xlarge
-    - db.r3.8xlarge
-    - db.r3.large
-    - db.r3.xlarge
-    - db.r4.16xlarge
-    - db.r4.2xlarge
-    - db.r4.4xlarge
-    - db.r4.8xlarge
-    - db.r4.large
-    - db.r4.xlarge
-    - db.r5.12xlarge
-    - db.r5.2xlarge
-    - db.r5.4xlarge
     - db.r5.large
     - db.r5.xlarge
+    - db.r5.2xlarge
+    - db.r5.4xlarge
+    - db.r5.8xlarge
+    - db.r5.12xlarge
+    - db.r5.16xlarge
+    - db.r5.24xlarge
     - db.t1.micro
     - db.t2.large
     - db.t2.medium
     - db.t2.micro
     - db.t2.small
     ConstraintDescription: Must select a valid database instance type.
-    Default: db.r4.large
+    Default: db.r5.large
     Description: The name of the compute and memory capacity class of the Amazon RDS
       (Aurora/MySQL) DB instance.
     Type: String
@@ -335,6 +313,7 @@ Parameters:
     - cache.m4.2xlarge
     - cache.m4.4xlarge
     - cache.m4.10xlarge
+    - cache.m5.large
     - cache.c1.xlarge
     - cache.r3.large
     - cache.r3.xlarge
@@ -419,13 +398,13 @@ Parameters:
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
-    Default: aws-quickstart
+    Default: ws-share
     Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
     Type: String
   QSS3BucketRegion:
-    Default: 'us-east-1'
+    Default: 'cn-north-1'
     Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
@@ -493,7 +472,7 @@ Parameters:
     - i3.4xlarge
     - i3.8xlarge
     ConstraintDescription: Choose an instance type. m3.medium or larger recommended.
-    Default: m4.large
+    Default: m5.large
     Description: Web server instance type
     Type: String
   WebServerMaxSize:
@@ -515,17 +494,13 @@ Rules:
     Assertions:
     - Assert:
         !Contains
-        - - db.r5.12xlarge
+        - - db.r5.24xlarge
+          - db.r5.16xlarge
+          - db.r5.12xlarge
           - db.r5.4xlarge
           - db.r5.2xlarge
           - db.r5.xlarge
           - db.r5.large
-          - db.r4.16xlarge
-          - db.r4.8xlarge
-          - db.r4.4xlarge
-          - db.r4.2xlarge
-          - db.r4.xlarge
-          - db.r4.large
         - !Ref DBInstanceClass
       AssertDescription: Amazon Aurora does not currently support this DB instance
         class.
@@ -552,8 +527,6 @@ Rules:
             - me-south-1
             - ap-northeast-3
             - ap-east-1
-            - cn-north-1
-            - cn-northwest-1
           - !Ref AWS::Region
       AssertDescription: Amazon EFS is not currently supported in this region
 Resources:

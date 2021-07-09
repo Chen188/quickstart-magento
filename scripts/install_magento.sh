@@ -606,7 +606,12 @@ fi
 sudo -u ec2-user /tmp/configure_magento.sh $dbhost $dbuser $dbpassword $dbname $cname $adminfirst $adminlast $adminemail $adminuser $adminpassword $cachehost $protocol $magentolanguage $magentocurrency $magentotimezone $magentoversion
 
 tar czf /root/media.tgz -C /var/www/html/pub/media .
-mount -t nfs4 -o vers=4.1 $efsid.efs.$EC2_REGION.amazonaws.com:/ /var/www/html/pub/media
+if [[ $EC2_REGION == cn-* ]]; then
+    mount -t nfs4 -o vers=4.1 $efsid.efs.$EC2_REGION.amazonaws.com.cn:/ /var/www/html/pub/media
+else
+    mount -t nfs4 -o vers=4.1 $efsid.efs.$EC2_REGION.amazonaws.com:/ /var/www/html/pub/media
+fi
+
 rm -rf /var/www/html/pub/media/*
 tar xzf /root/media.tgz -C /var/www/html/pub/media
 

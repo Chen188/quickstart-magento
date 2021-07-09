@@ -97,13 +97,13 @@ Parameters:
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
-    Default: aws-quickstart
+    Default: ws-share
     Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
     Type: String
   QSS3BucketRegion:
-    Default: 'us-east-1'
+    Default: 'cn-north-1'
     Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
@@ -556,7 +556,7 @@ Resources:
           Fn::Sub: |
             #cloud-config
             runcmd:
-            - echo "${FileSystem}.efs.${AWS::Region}.amazonaws.com:/    /var/www/html/pub/media   nfs4    defaults" >> /etc/fstab
+            - echo "${FileSystem}.efs.${AWS::Region}.${AWS::URLSuffix}:/    /var/www/html/pub/media   nfs4    defaults" >> /etc/fstab
             - mount -a
   WebServerTargetTrackingScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
